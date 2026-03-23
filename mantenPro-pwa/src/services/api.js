@@ -1,0 +1,1 @@
+const SHEETS_URL = 'https://script.google.com/macros/s/AKfycbwlkpc_O6okKVesP1DyByM7878zvTRV_3AaTmeKH2NO9o2IzL3gqKDziROowSk7yypQMg/exec'
