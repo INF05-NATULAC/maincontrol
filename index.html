@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#00d4ff">
+  <meta name="description" content="Sistema de Gestión de Paradas de Máquinas para Mantenimiento Industrial">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="MaintControl">
+  <meta name="mobile-web-app-capable" content="yes">
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="MaintControl - Gestión de Paradas Industriales">
+  <meta property="og:description" content="PWA para registro y seguimiento de paradas de máquinas en tiempo real">
+  <meta property="og:type" content="website">
+
+  <title>MaintControl — Gestión de Paradas Industriales</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Apple Touch Icons -->
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="apple-touch-startup-image" href="icons/icon-512.png">
+
+  <!-- Favicon -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚙️</text></svg>">
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/app.css">
+
+  <!-- Critical inline styles for fast FCP -->
+  <style>
+    body { background: #060b18; }
+    .loading-screen {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      background: #060b18;
+      z-index: 9999;
+      gap: 24px;
+    }
+    .loading-logo {
+      font-family: 'Orbitron', monospace;
+      font-size: 2rem; color: #00d4ff;
+      letter-spacing: 3px;
+    }
+    .loading-spinner {
+      width: 40px; height: 40px;
+      border: 3px solid rgba(0,212,255,0.15);
+      border-top-color: #00d4ff;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+    .loading-sub { color: #475569; font-size: 13px; font-family: 'Inter', sans-serif; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loadingScreen">
+    <div style="font-size:3rem">⚙️</div>
+    <div class="loading-logo">MaintControl</div>
+    <div class="loading-spinner"></div>
+    <div class="loading-sub">Inicializando sistema...</div>
+  </div>
+
+  <!-- External Libraries -->
+  <!-- Chart.js for dashboard charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <!-- SheetJS for Excel export -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <!-- Application Services (order matters) -->
+  <script src="js/services/dataService.js"></script>
+  <script src="js/services/authService.js"></script>
+  <script src="js/services/notificationService.js"></script>
+
+  <!-- Application Modules -->
+  <script src="js/modules/dashboard.js"></script>
+  <script src="js/modules/stopages.js"></script>
+  <script src="js/modules/admin.js"></script>
+
+  <!-- Main Application -->
+  <script src="js/app.js"></script>
+
+  <!-- Remove loading screen after app boots -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        const ls = document.getElementById('loadingScreen');
+        if (ls) {
+          ls.style.opacity = '0';
+          ls.style.transition = 'opacity 0.4s ease';
+          setTimeout(() => ls.remove(), 400);
+        }
+      }, 600);
+    });
+
+    // Handle sidebar toggle on mobile via pseudo-element click
+    document.addEventListener('click', (e) => {
+      if (window.innerWidth < 768) {
+        const mainContent = document.querySelector('.main-content');
+        if (mainContent) {
+          const rect = mainContent.getBoundingClientRect();
+          // Click area of the hamburger (top-left corner)
+          if (e.clientX < 56 && e.clientY < 56) {
+            const sidebar = document.getElementById('sidebar');
+            if (sidebar) sidebar.classList.toggle('open');
+          }
+        }
+        // Close sidebar when clicking outside
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar?.classList.contains('open')) {
+          const sidebarRect = sidebar.getBoundingClientRect();
+          if (e.clientX > sidebarRect.right) {
+            sidebar.classList.remove('open');
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
