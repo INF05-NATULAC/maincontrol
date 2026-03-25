@@ -9,7 +9,7 @@
 
 window.DataService = (() => {
   // ─── Backend adapter (swap to switch backends) ───────────────────────
-  const BACKEND = 'localStorage'; // 'localStorage' | 'googleSheets' | 'rest' | 'firestore'
+  const BACKEND = 'googleSheets'; // 'localStorage' | 'googleSheets' | 'rest' | 'firestore'
   
   // ─── Seed Data ───────────────────────────────────────────────────────
   const SEED = {
